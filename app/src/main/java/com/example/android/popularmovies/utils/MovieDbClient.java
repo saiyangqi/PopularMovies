@@ -10,7 +10,6 @@ import retrofit2.http.Query;
  * Created by Saiyang Qi on 5/6/18.
  */
 public interface MovieDbClient {
-    @GET("discover/movie")
-    Call<PopularMovies> getPopularMovies(@Query("api_key") String apiKey,
-                                         @Query("sort_by") String sortBy);
+    @GET("movie/popular")
+    Call<PopularMovies> getPopularMovies(@Query("api_key") String apiKey);
 }
