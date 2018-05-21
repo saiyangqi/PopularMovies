@@ -6,11 +6,11 @@
     android:layout_height="wrap_content" >
 
     <ImageView
-        android:id="@+id/list_item_movie_poster"
+        android:id="@+id/image_view_poster"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/movie_poster"
         android:padding="8dp"
-        tools:srcCompat="@android:color/holo_blue_dark"
-        android:contentDescription="Movie poster"
-        android:adjustViewBounds="true" />
+        tools:srcCompat="@android:color/holo_blue_dark" />
 </FrameLayout>

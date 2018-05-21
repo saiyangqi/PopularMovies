@@ -9,21 +9,34 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
 import com.example.android.popularmovies.R;
 import com.example.android.popularmovies.model.Movie;
 import com.example.android.popularmovies.utils.DisplayUtils;
+import com.example.android.popularmovies.utils.NetworkUtils;
 import com.example.android.popularmovies.viewmodel.MovieListViewModel;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class OverviewActivity extends AppCompatActivity {
     public static final String MODE_KEY = "selected_mode";
+    public static final String MOVIE_KEY = "selected_movie";
+
     public static final int MODE_POPULAR = 0;
     public static final int MODE_TOP_RATED = 1;
 
     private MovieListViewModel viewModel;
-    private RecyclerView recyclerView;
+
+    @BindView(R.id.recycler_view_overview)
+    RecyclerView recyclerView;
+
+    @BindView(R.id.text_view_overview_error)
+    TextView errorTextView;
 
     private String apiKey;
     private int mode;
@@ -32,12 +45,17 @@ public class OverviewActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_overview);
+        ButterKnife.bind(this);
 
         apiKey = getString(R.string.api_key);
         if (savedInstanceState != null) {
             mode = savedInstanceState.getInt(MODE_KEY, MODE_POPULAR);
         }
-        setUpRecyclerView();
+        if (NetworkUtils.hasInternetConnection(this)) {
+            setUpRecyclerView();
+        } else {
+            errorTextView.setVisibility(View.VISIBLE);
+        }
     }
 
 
@@ -50,6 +68,14 @@ public class OverviewActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.overview_menu, menu);
+        switch (mode) {
+            case MODE_POPULAR:
+                menu.findItem(R.id.overview_menu_popular).setChecked(true);
+                break;
+            case MODE_TOP_RATED:
+                menu.findItem(R.id.overview_menu_top_rated).setChecked(true);
+                break;
+        }
         return true;
     }
 
@@ -61,28 +87,20 @@ public class OverviewActivity extends AppCompatActivity {
                     mode = MODE_POPULAR;
                     showMovieList();
                 }
+                item.setChecked(true);
                 break;
             case R.id.overview_menu_top_rated:
                 if (mode != MODE_TOP_RATED) {
                     mode = MODE_TOP_RATED;
                     showMovieList();
                 }
+                item.setChecked(true);
                 break;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void showMovieList() {
-        viewModel.getMovieList(apiKey, mode).observe(this, new Observer<List<Movie>>() {
-            @Override
-            public void onChanged(@Nullable List<Movie> movieList) {
-                recyclerView.swapAdapter(new OverviewRvAdapter(movieList), true);
-            }
-        });
-    }
-
     private void setUpRecyclerView() {
-        recyclerView = findViewById(R.id.recycler_view_overview);
         recyclerView.setHasFixedSize(true);
         int numOfColumns = DisplayUtils.getNumOfColumns(this);
         recyclerView.setLayoutManager(new GridLayoutManager(this, numOfColumns));
@@ -93,5 +111,14 @@ public class OverviewActivity extends AppCompatActivity {
     private void setUpViewModel() {
         viewModel = ViewModelProviders.of(this).get(MovieListViewModel.class);
         showMovieList();
+    }
+
+    private void showMovieList() {
+        viewModel.getMovieList(apiKey, mode).observe(this, new Observer<List<Movie>>() {
+            @Override
+            public void onChanged(@Nullable List<Movie> movieList) {
+                recyclerView.swapAdapter(new OverviewRvAdapter(movieList), true);
+            }
+        });
     }
 }

@@ -20,7 +20,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Created by Saiyang Qi on 5/13/18.
  */
 public class MovieListViewModel extends ViewModel{
-    public static final String BASE_URL = "http://api.themoviedb.org/3/";
+    private static final String BASE_URL = "http://api.themoviedb.org/3/";
 
     private MutableLiveData<List<Movie>> livePopularMovieList;
     private MutableLiveData<List<Movie>> liveTopRatedMovieList;
@@ -67,7 +67,10 @@ public class MovieListViewModel extends ViewModel{
             @Override
             public void onResponse(Call<PopularMovies> call, Response<PopularMovies> response) {
                 PopularMovies popularMovies = response.body();
-                List<Movie> movieList = popularMovies.getMovieList();
+                List<Movie> movieList = null;
+                if (popularMovies != null ) {
+                    movieList = popularMovies.getMovieList();
+                }
                 if (mode == OverviewActivity.MODE_POPULAR) {
                     livePopularMovieList.setValue(movieList);
                 } else {

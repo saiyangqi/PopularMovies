@@ -7,6 +7,15 @@
     tools:context=".view.OverviewActivity"
     android:background="@color/colorPrimaryDark">
 
+    <TextView
+        android:id="@+id/text_view_overview_error"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/TextLabel"
+        android:text="@string/overview_error"
+        android:layout_gravity="center"
+        android:visibility="invisible"/>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view_overview"
         android:layout_width="match_parent"

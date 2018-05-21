@@ -8,4 +8,24 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="TextLabel">
+        <item name="android:textColor">@color/textPrimary</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="TextContent">
+        <item name="android:textColor">@color/textSecondary</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="MovieRatingBar" parent="Widget.AppCompat.RatingBar.Small">
+        <item name="android:isIndicator">true</item>
+        <item name="android:stepSize">0.1</item>
+        <item name="android:numStars">5</item>
+        <item name="android:progressTint">@color/textPrimary</item>
+        <item name="android:progressBackgroundTint">@color/textPrimary</item>
+        <item name="android:secondaryProgressTint">@color/textPrimary</item>
+
+    </style>
 </resources>
