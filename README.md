@@ -8,6 +8,7 @@ Grab an api key from <a href="https://www.themoviedb.org/documentation/api?langu
 <ul>
   <li><b>MVVM</b> architecture</li>
   <li><b>Retrofit</b> to call apis in the viewmodel</li>
+  <li><b>Gson</b> to parse JSON response to Java objects</li>
   <li><b>Picasso</b> to load images (posters and backdrops) into views</li>
   <li>Recyclerview with <b>GridLayoutManager</b> for movie list</li>
   <li>Endless Scrolling by using addtional api calls every time the end of list is reached</li>
