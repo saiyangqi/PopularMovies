@@ -38,6 +38,9 @@ public class OverviewActivity extends AppCompatActivity {
     @BindView(R.id.text_view_overview_error)
     TextView errorTextView;
 
+    private GridLayoutManager layoutManager;
+    private OverviewRvAdapter adapter;
+
     private String apiKey;
     private int mode;
 
@@ -81,21 +84,27 @@ public class OverviewActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.overview_menu_popular:
-                if (mode != MODE_POPULAR) {
-                    mode = MODE_POPULAR;
-                    showMovieList();
-                }
-                item.setChecked(true);
-                break;
-            case R.id.overview_menu_top_rated:
-                if (mode != MODE_TOP_RATED) {
-                    mode = MODE_TOP_RATED;
-                    showMovieList();
-                }
-                item.setChecked(true);
-                break;
+        if (NetworkUtils.hasInternetConnection(this)) {
+            switch (item.getItemId()) {
+                case R.id.overview_menu_popular:
+                    if (mode != MODE_POPULAR) {
+                        mode = MODE_POPULAR;
+                        showMovieList();
+                        layoutManager.scrollToPositionWithOffset(0, 0);
+                    }
+                    item.setChecked(true);
+                    setTitle(getString(R.string.title_popular));
+                    break;
+                case R.id.overview_menu_top_rated:
+                    if (mode != MODE_TOP_RATED) {
+                        mode = MODE_TOP_RATED;
+                        showMovieList();
+                        layoutManager.scrollToPositionWithOffset(0, 0);
+                    }
+                    item.setChecked(true);
+                    setTitle(getString(R.string.title_top_rated));
+                    break;
+            }
         }
         return super.onOptionsItemSelected(item);
     }
@@ -103,9 +112,20 @@ public class OverviewActivity extends AppCompatActivity {
     private void setUpRecyclerView() {
         recyclerView.setHasFixedSize(true);
         int numOfColumns = DisplayUtils.getNumOfColumns(this);
-        recyclerView.setLayoutManager(new GridLayoutManager(this, numOfColumns));
-
+        layoutManager = new GridLayoutManager(this, numOfColumns);
+        recyclerView.setLayoutManager(layoutManager);
+        adapter = new OverviewRvAdapter(null);
+        recyclerView.setAdapter(adapter);
         setUpViewModel();
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (!recyclerView.canScrollVertically(1)) {
+                    viewModel.updateMovieList(apiKey, mode);
+                }
+            }
+        });
     }
 
     private void setUpViewModel() {
@@ -117,7 +137,8 @@ public class OverviewActivity extends AppCompatActivity {
         viewModel.getMovieList(apiKey, mode).observe(this, new Observer<List<Movie>>() {
             @Override
             public void onChanged(@Nullable List<Movie> movieList) {
-                recyclerView.swapAdapter(new OverviewRvAdapter(movieList), true);
+                adapter.setMovieList(movieList);
+                adapter.notifyDataSetChanged();
             }
         });
     }

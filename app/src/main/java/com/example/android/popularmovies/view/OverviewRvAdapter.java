@@ -29,6 +29,10 @@ public class OverviewRvAdapter extends RecyclerView.Adapter<OverviewRvAdapter.Vi
         this.movieList = movieList;
     }
 
+    public void setMovieList(List<Movie> movieList) {
+        this.movieList = movieList;
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -43,6 +47,7 @@ public class OverviewRvAdapter extends RecyclerView.Adapter<OverviewRvAdapter.Vi
         String fullPosterUrl = getPosterFullPath(movie);
         Picasso.get()
                 .load(fullPosterUrl)
+                .placeholder(R.color.colorPrimary)
                 .into(holder.movieItemImageView);
         holder.movieItemImageView.setOnClickListener(new View.OnClickListener() {
             @Override

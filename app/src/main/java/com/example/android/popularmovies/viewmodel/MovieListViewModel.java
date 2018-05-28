@@ -24,13 +24,29 @@ public class MovieListViewModel extends ViewModel{
 
     private MutableLiveData<List<Movie>> livePopularMovieList;
     private MutableLiveData<List<Movie>> liveTopRatedMovieList;
+    private int popularPageNum = 0;
+    private int topRatedPageNum = 0;
+
+    private MovieDbClient client;
 
     public MutableLiveData<List<Movie>> getMovieList(String apiKey, int mode) {
+        if (client == null) {
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl(BASE_URL)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+
+            client = retrofit.create(MovieDbClient.class);
+        }
         if (mode == OverviewActivity.MODE_POPULAR) {
             return getPopularMovieList(apiKey, mode);
         } else {
             return getTopRatedMovieList(apiKey, mode);
         }
+    }
+
+    public void updateMovieList(String apiKey, int mode) {
+        loadMovieList(apiKey, mode);
     }
 
     private MutableLiveData<List<Movie>> getPopularMovieList(String apiKey, int mode) {
@@ -50,17 +66,13 @@ public class MovieListViewModel extends ViewModel{
     }
 
     private void loadMovieList(String apiKey, final int mode) {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        MovieDbClient client = retrofit.create(MovieDbClient.class);
         Call<PopularMovies> call;
         if (mode == OverviewActivity.MODE_POPULAR) {
-            call = client.getPopularMovies(apiKey);
+            popularPageNum++;
+            call = client.getPopularMovies(apiKey, Integer.toString(popularPageNum));
         } else {
-            call = client.getTopRatedMovies(apiKey);
+            topRatedPageNum++;
+            call = client.getTopRatedMovies(apiKey, Integer.toString(topRatedPageNum));
         }
 
         call.enqueue(new Callback<PopularMovies>() {
@@ -68,13 +80,28 @@ public class MovieListViewModel extends ViewModel{
             public void onResponse(Call<PopularMovies> call, Response<PopularMovies> response) {
                 PopularMovies popularMovies = response.body();
                 List<Movie> movieList = null;
-                if (popularMovies != null ) {
+                if (popularMovies != null) {
                     movieList = popularMovies.getMovieList();
+                    if (popularMovies.getTotalPages() < popularMovies.getPage()) {
+                        return;
+                    }
                 }
-                if (mode == OverviewActivity.MODE_POPULAR) {
-                    livePopularMovieList.setValue(movieList);
-                } else {
-                    liveTopRatedMovieList.setValue(movieList);
+                if (movieList != null) {
+                    if (mode == OverviewActivity.MODE_POPULAR) {
+                        if (livePopularMovieList.getValue() != null) {
+                            livePopularMovieList.getValue().addAll(movieList);
+                            livePopularMovieList.postValue(livePopularMovieList.getValue());
+                        } else {
+                            livePopularMovieList.postValue(movieList);
+                        }
+                    } else {
+                        if (liveTopRatedMovieList.getValue() != null) {
+                            liveTopRatedMovieList.getValue().addAll(movieList);
+                            liveTopRatedMovieList.postValue(liveTopRatedMovieList.getValue());
+                        } else {
+                            liveTopRatedMovieList.postValue(movieList);
+                        }
+                    }
                 }
             }
 

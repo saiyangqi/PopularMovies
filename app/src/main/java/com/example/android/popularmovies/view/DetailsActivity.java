@@ -11,8 +11,6 @@ import com.example.android.popularmovies.R;
 import com.example.android.popularmovies.model.Movie;
 import com.squareup.picasso.Picasso;
 
-import java.util.Locale;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -46,18 +44,34 @@ public class DetailsActivity extends AppCompatActivity {
     }
 
     private void displayMovieDetails(Movie movie) {
-        String fullBackdropUrl = getBackdropFullPath(movie);
-        Picasso.get()
-                .load(fullBackdropUrl)
-                .into(backDropImageView);
+        boolean isPortrait = getResources().getBoolean(R.bool.is_portrait);
+        setTitle(movie.getTitle());
+        displayImage(movie, isPortrait);
         titleTextView.setText(movie.getTitle());
         ratingBar.setRating((float) (movie.getVoteAverage() / 2.0));
-        ratingCountTextView.setText(String.format(Locale.ENGLISH, "(%d ratings)", movie.getVoteCount()));
+        ratingCountTextView.setText(getString(R.string.rating_count, movie.getVoteCount()));
         releaseDateTextView.setText(movie.getReleaseDate());
         plotTextView.setText(movie.getOverview());
     }
 
+    private void displayImage(Movie movie, boolean isPortrait) {
+        String fullImagePath;
+        if (isPortrait) {
+            fullImagePath = getBackdropFullPath(movie);
+        } else {
+            fullImagePath = getPosterFullPath(movie);
+        }
+        Picasso.get()
+                .load(fullImagePath)
+                .placeholder(R.color.colorPrimary)
+                .into(backDropImageView);
+    }
+
     private String getBackdropFullPath(Movie movie) {
         return BACKDROP_BASE_URL + movie.getBackdropPath();
+    }
+
+    private String getPosterFullPath(Movie movie) {
+        return BACKDROP_BASE_URL + movie.getPosterPath();
     }
 }
