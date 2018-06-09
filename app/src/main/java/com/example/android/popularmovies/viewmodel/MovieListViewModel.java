@@ -4,7 +4,7 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 
 import com.example.android.popularmovies.model.Movie;
-import com.example.android.popularmovies.model.PopularMovies;
+import com.example.android.popularmovies.model.PopularMoviesResponse;
 import com.example.android.popularmovies.utils.MovieDbClient;
 import com.example.android.popularmovies.view.OverviewActivity;
 
@@ -66,7 +66,7 @@ public class MovieListViewModel extends ViewModel{
     }
 
     private void loadMovieList(String apiKey, final int mode) {
-        Call<PopularMovies> call;
+        Call<PopularMoviesResponse> call;
         if (mode == OverviewActivity.MODE_POPULAR) {
             popularPageNum++;
             call = client.getPopularMovies(apiKey, Integer.toString(popularPageNum));
@@ -75,14 +75,14 @@ public class MovieListViewModel extends ViewModel{
             call = client.getTopRatedMovies(apiKey, Integer.toString(topRatedPageNum));
         }
 
-        call.enqueue(new Callback<PopularMovies>() {
+        call.enqueue(new Callback<PopularMoviesResponse>() {
             @Override
-            public void onResponse(Call<PopularMovies> call, Response<PopularMovies> response) {
-                PopularMovies popularMovies = response.body();
+            public void onResponse(Call<PopularMoviesResponse> call, Response<PopularMoviesResponse> response) {
+                PopularMoviesResponse popularMoviesResponse = response.body();
                 List<Movie> movieList = null;
-                if (popularMovies != null) {
-                    movieList = popularMovies.getMovieList();
-                    if (popularMovies.getTotalPages() < popularMovies.getPage()) {
+                if (popularMoviesResponse != null) {
+                    movieList = popularMoviesResponse.getMovieList();
+                    if (popularMoviesResponse.getTotalPages() < popularMoviesResponse.getPage()) {
                         return;
                     }
                 }
@@ -106,7 +106,7 @@ public class MovieListViewModel extends ViewModel{
             }
 
             @Override
-            public void onFailure(Call<PopularMovies> call, Throwable t) {
+            public void onFailure(Call<PopularMoviesResponse> call, Throwable t) {
             }
         });
     }

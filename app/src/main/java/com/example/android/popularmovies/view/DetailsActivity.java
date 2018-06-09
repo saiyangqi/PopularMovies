@@ -1,21 +1,31 @@
 package com.example.android.popularmovies.view;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.example.android.popularmovies.R;
 import com.example.android.popularmovies.model.Movie;
+import com.example.android.popularmovies.model.MovieVideo;
+import com.example.android.popularmovies.viewmodel.MovieDetailViewModel;
 import com.squareup.picasso.Picasso;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class DetailsActivity extends AppCompatActivity {
     public static final String BACKDROP_BASE_URL = "http://image.tmdb.org/t/p/w500";
+
+    private MovieDetailViewModel viewModel;
 
     @BindView(R.id.image_view_backdrop)
     ImageView backDropImageView;
@@ -30,17 +40,39 @@ public class DetailsActivity extends AppCompatActivity {
     @BindView(R.id.text_view_plot)
     TextView plotTextView;
 
+    private String apiKey;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
         ButterKnife.bind(this);
 
+        apiKey = getString(R.string.api_key);
+
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra(OverviewActivity.MOVIE_KEY)) {
             Movie movie = intent.getParcelableExtra(OverviewActivity.MOVIE_KEY);
             displayMovieDetails(movie);
+            displayMovieVideos(movie);
         }
+    }
+
+    private void displayMovieVideos(Movie movie) {
+        viewModel = ViewModelProviders.of(this).get(MovieDetailViewModel.class);
+        viewModel.getMovieVideoList(apiKey, movie.getId()).observe(this, new Observer<List<MovieVideo>>() {
+            @Override
+            public void onChanged(@Nullable List<MovieVideo> movieVideos) {
+                if (movieVideos != null) {
+                    for (MovieVideo video : movieVideos) {
+                        Log.d("Video Name", video.getName());
+                    }
+                }
+                else {
+                    Log.d("Video Name", "No info received");
+                }
+            }
+        });
     }
 
     private void displayMovieDetails(Movie movie) {

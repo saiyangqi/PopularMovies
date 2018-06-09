@@ -1,9 +1,11 @@
 package com.example.android.popularmovies.utils;
 
-import com.example.android.popularmovies.model.PopularMovies;
+import com.example.android.popularmovies.model.MovieVideosResponse;
+import com.example.android.popularmovies.model.PopularMoviesResponse;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 /**
@@ -11,8 +13,11 @@ import retrofit2.http.Query;
  */
 public interface MovieDbClient {
     @GET("movie/popular")
-    Call<PopularMovies> getPopularMovies(@Query("api_key") String apiKey, @Query("page") String pageNum);
+    Call<PopularMoviesResponse> getPopularMovies(@Query("api_key") String apiKey, @Query("page") String pageNum);
 
     @GET("movie/top_rated")
-    Call<PopularMovies> getTopRatedMovies(@Query("api_key") String apiKey, @Query("page") String pageNum);
+    Call<PopularMoviesResponse> getTopRatedMovies(@Query("api_key") String apiKey, @Query("page") String pageNum);
+
+    @GET("movie/{movie_id}/videos")
+    Call<MovieVideosResponse> getMovieVideos(@Path("movie_id") int movieId, @Query("api_key") String apiKey);
 }

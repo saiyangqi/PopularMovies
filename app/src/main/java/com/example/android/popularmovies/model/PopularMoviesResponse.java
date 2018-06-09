@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Created by Saiyang Qi on 5/6/18.
  */
-public class PopularMovies {
+public class PopularMoviesResponse {
     private int page;
     @SerializedName("total_results")
     private int totalResults;
@@ -17,7 +17,7 @@ public class PopularMovies {
     @SerializedName("results")
     private List<Movie> movieList;
 
-    public PopularMovies() {
+    public PopularMoviesResponse() {
         movieList = new ArrayList<>();
     }
 
