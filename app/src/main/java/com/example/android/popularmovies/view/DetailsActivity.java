@@ -6,7 +6,8 @@ import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -39,8 +40,11 @@ public class DetailsActivity extends AppCompatActivity {
     TextView releaseDateTextView;
     @BindView(R.id.text_view_plot)
     TextView plotTextView;
+    @BindView(R.id.recycler_view_details_trailers)
+    RecyclerView trailersRecyclerView;
 
     private String apiKey;
+    private TrailersRvAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,18 +63,17 @@ public class DetailsActivity extends AppCompatActivity {
     }
 
     private void displayMovieVideos(Movie movie) {
+        trailersRecyclerView.setHasFixedSize(true);
+        trailersRecyclerView.setLayoutManager(new LinearLayoutManager(this,
+                LinearLayoutManager.VERTICAL, false));
+        adapter = new TrailersRvAdapter(null);
+        trailersRecyclerView.setAdapter(adapter);
         viewModel = ViewModelProviders.of(this).get(MovieDetailViewModel.class);
         viewModel.getMovieVideoList(apiKey, movie.getId()).observe(this, new Observer<List<MovieVideo>>() {
             @Override
             public void onChanged(@Nullable List<MovieVideo> movieVideos) {
-                if (movieVideos != null) {
-                    for (MovieVideo video : movieVideos) {
-                        Log.d("Video Name", video.getName());
-                    }
-                }
-                else {
-                    Log.d("Video Name", "No info received");
-                }
+                adapter.setTrailerList(movieVideos);
+                adapter.notifyDataSetChanged();
             }
         });
     }

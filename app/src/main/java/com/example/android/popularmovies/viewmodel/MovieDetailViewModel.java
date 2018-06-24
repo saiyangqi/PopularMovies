@@ -2,7 +2,6 @@ package com.example.android.popularmovies.viewmodel;
 
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
-import android.util.Log;
 
 import com.example.android.popularmovies.model.MovieVideo;
 import com.example.android.popularmovies.model.MovieVideosResponse;
