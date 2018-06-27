@@ -12,4 +12,7 @@
     <string name="title_top_rated">Top Rated Movies</string>
     <string name="rating_count">(%1$d ratings)</string>
     <string name="trailers_label">Trailers &amp; Clips:</string>
+    <string name="reviews_label">User Reviews:</string>
+    <string name="reviews_author">By %1$s</string>
+    <string name="movie_video_thumbnail">Movie video thumbnail</string>
 </resources>

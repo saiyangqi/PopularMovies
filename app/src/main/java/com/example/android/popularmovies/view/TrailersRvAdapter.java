@@ -1,8 +1,11 @@
 package com.example.android.popularmovies.view;
 
+import android.content.ActivityNotFoundException;
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,17 +46,20 @@ public class TrailersRvAdapter extends RecyclerView.Adapter<TrailersRvAdapter.Vi
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        MovieVideo video = trailerList.get(position);
-        holder.videoTitleTextView.setText(video.getName());
+        final MovieVideo video = trailerList.get(position);
         String thumbnailUrl = getThumbnailUrl(video);
         Picasso.get()
                 .load(thumbnailUrl)
                 .placeholder(R.color.colorPrimary)
                 .into(holder.videoThumbnailImageView);
-    }
-
-    private String getThumbnailUrl(MovieVideo video) {
-        return THUMBNAIL_BASE_URL + video.getKey() + "/default.jpg";
+        holder.videoTitleTextView.setText(video.getName());
+        holder.listItemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String key = video.getKey();
+                watchYoutubeVideo(view.getContext(), key);
+            }
+        });
     }
 
     @Override
@@ -65,12 +71,29 @@ public class TrailersRvAdapter extends RecyclerView.Adapter<TrailersRvAdapter.Vi
         }
     }
 
+    private String getThumbnailUrl(MovieVideo video) {
+        return THUMBNAIL_BASE_URL + video.getKey() + "/default.jpg";
+    }
+
+    private void watchYoutubeVideo(Context context, String key) {
+        Intent appIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + key));
+        Intent webIntent = new Intent(Intent.ACTION_VIEW,
+                Uri.parse("http://www.youtube.com/watch?v=" + key));
+        try {
+            context.startActivity(appIntent);
+        } catch (ActivityNotFoundException ex) {
+            context.startActivity(webIntent);
+        }
+    }
+
     class ViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.text_view_video_title)
         TextView videoTitleTextView;
         @BindView(R.id.image_view_video_thumbnail)
         ImageView videoThumbnailImageView;
+        @BindView(R.id.view_trailers_list_item)
+        View listItemView;
 
         public ViewHolder(View itemView) {
             super(itemView);

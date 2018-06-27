@@ -1,5 +1,6 @@
 package com.example.android.popularmovies.utils;
 
+import com.example.android.popularmovies.model.MovieReviewsResponse;
 import com.example.android.popularmovies.model.MovieVideosResponse;
 import com.example.android.popularmovies.model.PopularMoviesResponse;
 
@@ -20,4 +21,7 @@ public interface MovieDbClient {
 
     @GET("movie/{movie_id}/videos")
     Call<MovieVideosResponse> getMovieVideos(@Path("movie_id") int movieId, @Query("api_key") String apiKey);
+
+    @GET("movie/{movie_id}/reviews")
+    Call<MovieReviewsResponse> getMovieReviews(@Path("movie_id") int movieId, @Query("api_key") String apiKey);
 }

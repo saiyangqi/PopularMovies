@@ -114,12 +114,54 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/text_view_plot_label"
             app:layout_constraintTop_toBottomOf="@+id/text_view_plot_label"
             tools:text="Spanning the years 1945 to 1955, a chronicle of the fictional Italian-American Corleone crime family. When organized crime family patriarch, Vito Corleone barely survives an attempt on his life, his youngest son, Michael steps in to take care of the would-be killers, launching a campaign of bloody revenge." />
+
+        <TextView
+            android:id="@+id/text_view_trailers_label"
+            style="@style/TextLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/trailers_label"
+            android:layout_marginTop="8dp"
+            app:layout_constraintStart_toStartOf="@+id/text_view_plot"
+            app:layout_constraintTop_toBottomOf="@+id/text_view_plot" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view_details_trailers"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            app:layout_constraintStart_toStartOf="@id/text_view_trailers_label"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/text_view_trailers_label"/>
+
+        <TextView
+            android:id="@+id/text_view_reviews_label"
+            style="@style/TextLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/reviews_label"
+            android:layout_marginTop="8dp"
+            app:layout_constraintStart_toStartOf="@id/text_view_trailers_label"
+            app:layout_constraintTop_toBottomOf="@id/recycler_view_details_trailers" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view_details_reviews"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            app:layout_constraintStart_toStartOf="@id/text_view_reviews_label"
+            app:layout_constraintTop_toBottomOf="@id/text_view_reviews_label"
+            app:layout_constraintEnd_toEndOf="parent" />
 
     </android.support.constraint.ConstraintLayout>
 </ScrollView>

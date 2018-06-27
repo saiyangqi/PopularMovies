@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="4dp"
+    android:paddingEnd="4dp"
+    android:layout_marginBottom="4dp"
+    android:background="@color/colorPrimary">
+
+    <TextView
+        android:id="@+id/text_view_review_content"
+        style="@style/TextContent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="10"
+        tools:text="Great Movie!"/>
+
+    <TextView
+        android:id="@+id/text_view_review_author"
+        style="@style/TextLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorAccent"
+        android:ellipsize="end"
+        android:maxLines="1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_view_review_content"
+        tools:text="By a67478307" />
+
+</android.support.constraint.ConstraintLayout>

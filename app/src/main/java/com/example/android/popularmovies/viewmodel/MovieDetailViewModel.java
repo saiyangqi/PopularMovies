@@ -3,6 +3,8 @@ package com.example.android.popularmovies.viewmodel;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 
+import com.example.android.popularmovies.model.MovieReview;
+import com.example.android.popularmovies.model.MovieReviewsResponse;
 import com.example.android.popularmovies.model.MovieVideo;
 import com.example.android.popularmovies.model.MovieVideosResponse;
 import com.example.android.popularmovies.utils.MovieDbClient;
@@ -21,10 +23,28 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class MovieDetailViewModel extends ViewModel{
     private static final String BASE_URL = "http://api.themoviedb.org/3/";
     private MutableLiveData<List<MovieVideo>> liveMovieVideoList;
+    private MutableLiveData<List<MovieReview>> liveMovieReviewList;
     private MovieDbClient client;
 
-
     public MutableLiveData<List<MovieVideo>> getMovieVideoList(String apiKey, int movieId) {
+        initClient();
+        if (liveMovieVideoList == null) {
+            liveMovieVideoList = new MutableLiveData<>();
+            loadMovieVideoList(apiKey, movieId);
+        }
+        return liveMovieVideoList;
+    }
+
+    public MutableLiveData<List<MovieReview>> getMovieReviewList(String apiKey, int movieId) {
+        initClient();
+        if (liveMovieReviewList == null) {
+            liveMovieReviewList = new MutableLiveData<>();
+            loadMovieReviewList(apiKey, movieId);
+        }
+        return liveMovieReviewList;
+    }
+
+    private void initClient() {
         if (client == null) {
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl(BASE_URL)
@@ -32,11 +52,6 @@ public class MovieDetailViewModel extends ViewModel{
                     .build();
             client = retrofit.create(MovieDbClient.class);
         }
-        if (liveMovieVideoList == null) {
-            liveMovieVideoList = new MutableLiveData<>();
-            loadMovieVideoList(apiKey, movieId);
-        }
-        return liveMovieVideoList;
     }
 
     private void loadMovieVideoList(String apiKey, int movieId) {
@@ -51,6 +66,23 @@ public class MovieDetailViewModel extends ViewModel{
             }
             @Override
             public void onFailure(Call<MovieVideosResponse> call, Throwable t) {
+            }
+        });
+    }
+
+    private void loadMovieReviewList(String apiKey, int movieId) {
+        Call<MovieReviewsResponse> call = client.getMovieReviews(movieId, apiKey);
+        call.enqueue(new Callback<MovieReviewsResponse>() {
+            @Override
+            public void onResponse(Call<MovieReviewsResponse> call, Response<MovieReviewsResponse> response) {
+                MovieReviewsResponse movieReviewsResponse = response.body();
+                if (movieReviewsResponse != null) {
+                    liveMovieReviewList.postValue(movieReviewsResponse.getMovieReviewlist());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MovieReviewsResponse> call, Throwable t) {
             }
         });
     }

@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.example.android.popularmovies.R;
 import com.example.android.popularmovies.model.Movie;
+import com.example.android.popularmovies.model.MovieReview;
 import com.example.android.popularmovies.model.MovieVideo;
 import com.example.android.popularmovies.viewmodel.MovieDetailViewModel;
 import com.squareup.picasso.Picasso;
@@ -42,9 +43,12 @@ public class DetailsActivity extends AppCompatActivity {
     TextView plotTextView;
     @BindView(R.id.recycler_view_details_trailers)
     RecyclerView trailersRecyclerView;
+    @BindView(R.id.recycler_view_details_reviews)
+    RecyclerView reviewsRecyclerView;
 
     private String apiKey;
-    private TrailersRvAdapter adapter;
+    private TrailersRvAdapter trailersRvAdapter;
+    private ReviewsRvAdapter reviewsRvAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,21 +63,36 @@ public class DetailsActivity extends AppCompatActivity {
             Movie movie = intent.getParcelableExtra(OverviewActivity.MOVIE_KEY);
             displayMovieDetails(movie);
             displayMovieVideos(movie);
+            displayMovieReviews(movie);
         }
+    }
+
+    private void displayMovieReviews(Movie movie) {
+        reviewsRecyclerView.setLayoutManager(new LinearLayoutManager(this,
+                LinearLayoutManager.VERTICAL, false));
+        reviewsRvAdapter = new ReviewsRvAdapter(null);
+        reviewsRecyclerView.setAdapter(reviewsRvAdapter);
+        viewModel.getMovieReviewList(apiKey, movie.getId()).observe(this, new Observer<List<MovieReview>>() {
+            @Override
+            public void onChanged(@Nullable List<MovieReview> movieReviews) {
+                reviewsRvAdapter.setMovieReviewList(movieReviews);
+                reviewsRvAdapter.notifyDataSetChanged();
+            }
+        });
     }
 
     private void displayMovieVideos(Movie movie) {
         trailersRecyclerView.setHasFixedSize(true);
         trailersRecyclerView.setLayoutManager(new LinearLayoutManager(this,
                 LinearLayoutManager.VERTICAL, false));
-        adapter = new TrailersRvAdapter(null);
-        trailersRecyclerView.setAdapter(adapter);
+        trailersRvAdapter = new TrailersRvAdapter(null);
+        trailersRecyclerView.setAdapter(trailersRvAdapter);
         viewModel = ViewModelProviders.of(this).get(MovieDetailViewModel.class);
         viewModel.getMovieVideoList(apiKey, movie.getId()).observe(this, new Observer<List<MovieVideo>>() {
             @Override
             public void onChanged(@Nullable List<MovieVideo> movieVideos) {
-                adapter.setTrailerList(movieVideos);
-                adapter.notifyDataSetChanged();
+                trailersRvAdapter.setTrailerList(movieVideos);
+                trailersRvAdapter.notifyDataSetChanged();
             }
         });
     }

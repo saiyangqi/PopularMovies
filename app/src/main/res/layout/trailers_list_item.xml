@@ -3,16 +3,17 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/view_trailers_list_item"
     android:layout_width="match_parent"
     android:layout_height="50dp"
-    android:background="@color/colorPrimaryDark">
+    android:background="@color/colorPrimary"
+    android:layout_marginBottom="4dp">
 
     <ImageView
         android:id="@+id/image_view_video_thumbnail"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_marginLeft="8dp"
-        android:layout_marginBottom="2dp"
+        android:contentDescription="@string/movie_video_thumbnail"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -30,12 +31,12 @@
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:gravity="end"
         android:ellipsize="end"
         android:maxLines="2"
         android:textStyle="italic"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@+id/image_view_video_thumbnail"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="DeadPool 2 Official Trailer DeadPool 2 Official Trailer DeadPool 2 Official Trailer DeadPool 2 Official Trailer" />
