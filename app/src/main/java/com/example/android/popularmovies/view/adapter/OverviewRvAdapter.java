@@ -1,4 +1,4 @@
-package com.example.android.popularmovies.view;
+package com.example.android.popularmovies.view.adapter;
 
 import android.content.Context;
 import android.content.Intent;
@@ -11,6 +11,8 @@ import android.widget.ImageView;
 
 import com.example.android.popularmovies.R;
 import com.example.android.popularmovies.model.Movie;
+import com.example.android.popularmovies.view.DetailsActivity;
+import com.example.android.popularmovies.view.OverviewActivity;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;

@@ -8,6 +8,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -16,6 +18,8 @@ import com.example.android.popularmovies.R;
 import com.example.android.popularmovies.model.Movie;
 import com.example.android.popularmovies.model.MovieReview;
 import com.example.android.popularmovies.model.MovieVideo;
+import com.example.android.popularmovies.view.adapter.ReviewsRvAdapter;
+import com.example.android.popularmovies.view.adapter.TrailersRvAdapter;
 import com.example.android.popularmovies.viewmodel.MovieDetailViewModel;
 import com.squareup.picasso.Picasso;
 
@@ -50,6 +54,8 @@ public class DetailsActivity extends AppCompatActivity {
     private TrailersRvAdapter trailersRvAdapter;
     private ReviewsRvAdapter reviewsRvAdapter;
 
+    private boolean isFavorite = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,6 +70,29 @@ public class DetailsActivity extends AppCompatActivity {
             displayMovieDetails(movie);
             displayMovieVideos(movie);
             displayMovieReviews(movie);
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.details_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.details_menu_favorite:
+                if (isFavorite) {
+                    item.setIcon(R.drawable.ic_favorite_white_24dp);
+                } else {
+                    item.setIcon(R.drawable.ic_favorite_white_full_24dp);
+                }
+                isFavorite = !isFavorite;
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 

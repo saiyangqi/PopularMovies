@@ -1,4 +1,4 @@
-package com.example.android.popularmovies.view;
+package com.example.android.popularmovies.view.adapter;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;

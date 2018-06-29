@@ -16,6 +16,7 @@ import com.example.android.popularmovies.R;
 import com.example.android.popularmovies.model.Movie;
 import com.example.android.popularmovies.utils.DisplayUtils;
 import com.example.android.popularmovies.utils.NetworkUtils;
+import com.example.android.popularmovies.view.adapter.OverviewRvAdapter;
 import com.example.android.popularmovies.viewmodel.MovieListViewModel;
 
 import java.util.List;

@@ -15,4 +15,5 @@
     <string name="reviews_label">User Reviews:</string>
     <string name="reviews_author">By %1$s</string>
     <string name="movie_video_thumbnail">Movie video thumbnail</string>
+    <string name="details_menu_favorite">Favorite</string>
 </resources>
