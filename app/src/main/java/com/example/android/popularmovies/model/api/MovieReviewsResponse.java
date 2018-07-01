@@ -1,5 +1,6 @@
-package com.example.android.popularmovies.model;
+package com.example.android.popularmovies.model.api;
 
+import com.example.android.popularmovies.model.MovieReview;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;

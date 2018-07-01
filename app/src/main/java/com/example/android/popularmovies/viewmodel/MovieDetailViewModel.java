@@ -4,10 +4,10 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 
 import com.example.android.popularmovies.model.MovieReview;
-import com.example.android.popularmovies.model.MovieReviewsResponse;
+import com.example.android.popularmovies.model.api.MovieReviewsResponse;
 import com.example.android.popularmovies.model.MovieVideo;
-import com.example.android.popularmovies.model.MovieVideosResponse;
-import com.example.android.popularmovies.utils.MovieDbClient;
+import com.example.android.popularmovies.model.api.MovieVideosResponse;
+import com.example.android.popularmovies.model.api.MovieDbClient;
 
 import java.util.List;
 

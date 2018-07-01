@@ -4,8 +4,8 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 
 import com.example.android.popularmovies.model.Movie;
-import com.example.android.popularmovies.model.PopularMoviesResponse;
-import com.example.android.popularmovies.utils.MovieDbClient;
+import com.example.android.popularmovies.model.api.PopularMoviesResponse;
+import com.example.android.popularmovies.model.api.MovieDbClient;
 import com.example.android.popularmovies.view.OverviewActivity;
 
 import java.util.List;
@@ -19,7 +19,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 /**
  * Created by Saiyang Qi on 5/13/18.
  */
-public class MovieListViewModel extends ViewModel{
+public class MovieListViewModel extends ViewModel {
     private static final String BASE_URL = "http://api.themoviedb.org/3/";
 
     private MutableLiveData<List<Movie>> livePopularMovieList;

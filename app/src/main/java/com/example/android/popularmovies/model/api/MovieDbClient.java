@@ -1,8 +1,4 @@
-package com.example.android.popularmovies.utils;
-
-import com.example.android.popularmovies.model.MovieReviewsResponse;
-import com.example.android.popularmovies.model.MovieVideosResponse;
-import com.example.android.popularmovies.model.PopularMoviesResponse;
+package com.example.android.popularmovies.model.api;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
