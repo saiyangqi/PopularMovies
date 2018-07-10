@@ -95,7 +95,7 @@ public class TrailersRvAdapter extends RecyclerView.Adapter<TrailersRvAdapter.Vi
         @BindView(R.id.view_trailers_list_item)
         View listItemView;
 
-        public ViewHolder(View itemView) {
+        ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }

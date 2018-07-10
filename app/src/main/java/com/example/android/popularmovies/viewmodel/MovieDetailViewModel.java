@@ -3,7 +3,6 @@ package com.example.android.popularmovies.viewmodel;
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.ViewModel;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 
@@ -110,14 +109,14 @@ public class MovieDetailViewModel extends AndroidViewModel {
         Call<MovieVideosResponse> call = client.getMovieVideos(movieId, apiKey);
         call.enqueue(new Callback<MovieVideosResponse>() {
             @Override
-            public void onResponse(Call<MovieVideosResponse> call, Response<MovieVideosResponse> response) {
+            public void onResponse(@NonNull Call<MovieVideosResponse> call, @NonNull Response<MovieVideosResponse> response) {
                 MovieVideosResponse movieVideosResponse = response.body();
                 if (movieVideosResponse != null) {
                     liveMovieVideoList.postValue(movieVideosResponse.getMovieVideoList());
                 }
             }
             @Override
-            public void onFailure(Call<MovieVideosResponse> call, Throwable t) {
+            public void onFailure(@NonNull Call<MovieVideosResponse> call, @NonNull Throwable t) {
             }
         });
     }
@@ -126,7 +125,7 @@ public class MovieDetailViewModel extends AndroidViewModel {
         Call<MovieReviewsResponse> call = client.getMovieReviews(movieId, apiKey);
         call.enqueue(new Callback<MovieReviewsResponse>() {
             @Override
-            public void onResponse(Call<MovieReviewsResponse> call, Response<MovieReviewsResponse> response) {
+            public void onResponse(@NonNull Call<MovieReviewsResponse> call, @NonNull Response<MovieReviewsResponse> response) {
                 MovieReviewsResponse movieReviewsResponse = response.body();
                 if (movieReviewsResponse != null) {
                     liveMovieReviewList.postValue(movieReviewsResponse.getMovieReviewlist());
@@ -134,7 +133,7 @@ public class MovieDetailViewModel extends AndroidViewModel {
             }
 
             @Override
-            public void onFailure(Call<MovieReviewsResponse> call, Throwable t) {
+            public void onFailure(@NonNull Call<MovieReviewsResponse> call, @NonNull Throwable t) {
             }
         });
     }

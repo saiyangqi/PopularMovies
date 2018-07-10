@@ -64,15 +64,6 @@ public class MovieListViewModel extends AndroidViewModel {
         loadMovieList(apiKey, mode);
     }
 
-    public void insertAllToFavorite(final Movie... favoriteMovies) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                db.favoriteMovieDao().insertAll(favoriteMovies);
-            }
-        }).start();
-    }
-
     private LiveData<List<Movie>> getFavoriteMovieList() {
         if (liveFavoriteMovieList == null) {
             liveFavoriteMovieList = db.favoriteMovieDao().getAll();
@@ -108,7 +99,7 @@ public class MovieListViewModel extends AndroidViewModel {
 
         call.enqueue(new Callback<PopularMoviesResponse>() {
             @Override
-            public void onResponse(Call<PopularMoviesResponse> call, Response<PopularMoviesResponse> response) {
+            public void onResponse(@NonNull Call<PopularMoviesResponse> call, @NonNull Response<PopularMoviesResponse> response) {
                 PopularMoviesResponse popularMoviesResponse = response.body();
                 List<Movie> movieList = null;
                 if (popularMoviesResponse != null) {
@@ -137,7 +128,7 @@ public class MovieListViewModel extends AndroidViewModel {
             }
 
             @Override
-            public void onFailure(Call<PopularMoviesResponse> call, Throwable t) {
+            public void onFailure(@NonNull Call<PopularMoviesResponse> call, @NonNull Throwable t) {
             }
         });
     }

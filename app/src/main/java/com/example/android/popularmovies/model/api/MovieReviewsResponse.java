@@ -25,7 +25,7 @@ public class MovieReviewsResponse {
         return movieReviewList;
     }
 
-    public void setMovieReviewlist(List<MovieReview> movieReviewlist) {
-        this.movieReviewList = movieReviewlist;
+    public void setMovieReviewlist(List<MovieReview> movieReviewList) {
+        this.movieReviewList = movieReviewList;
     }
 }
