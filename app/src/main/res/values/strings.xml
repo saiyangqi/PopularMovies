@@ -6,14 +6,17 @@
     <string name="movie_backdrop">Movie backdrop</string>
     <string name="movie_poster">Movie poster</string>
     <string name="overview_error">No Internet Connection Detected!\nPlease Check Back Again.</string>
+    <string name="overview_favorite_empty">No favorite marked yet!</string>
     <string name="menu_popular">Popular</string>
     <string name="menu_top_rated">Top Rated</string>
     <string name="title_popular">Popular Movies</string>
     <string name="title_top_rated">Top Rated Movies</string>
+    <string name="title_favorite">Favorite Movies</string>
     <string name="rating_count">(%1$d ratings)</string>
     <string name="trailers_label">Trailers &amp; Clips:</string>
     <string name="reviews_label">User Reviews:</string>
     <string name="reviews_author">By %1$s</string>
     <string name="movie_video_thumbnail">Movie video thumbnail</string>
     <string name="details_menu_favorite">Favorite</string>
+    <string name="menu_favorite">Favorite</string>
 </resources>

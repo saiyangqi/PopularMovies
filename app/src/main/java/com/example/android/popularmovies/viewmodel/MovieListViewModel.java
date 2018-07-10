@@ -1,11 +1,15 @@
 package com.example.android.popularmovies.viewmodel;
 
+import android.app.Application;
+import android.arch.lifecycle.AndroidViewModel;
+import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.ViewModel;
+import android.support.annotation.NonNull;
 
 import com.example.android.popularmovies.model.Movie;
 import com.example.android.popularmovies.model.api.PopularMoviesResponse;
 import com.example.android.popularmovies.model.api.MovieDbClient;
+import com.example.android.popularmovies.model.database.FavoriteMovieDb;
 import com.example.android.popularmovies.view.OverviewActivity;
 
 import java.util.List;
@@ -19,17 +23,28 @@ import retrofit2.converter.gson.GsonConverterFactory;
 /**
  * Created by Saiyang Qi on 5/13/18.
  */
-public class MovieListViewModel extends ViewModel {
+public class MovieListViewModel extends AndroidViewModel {
     private static final String BASE_URL = "http://api.themoviedb.org/3/";
 
     private MutableLiveData<List<Movie>> livePopularMovieList;
     private MutableLiveData<List<Movie>> liveTopRatedMovieList;
+    private LiveData<List<Movie>> liveFavoriteMovieList;
+
     private int popularPageNum = 0;
     private int topRatedPageNum = 0;
 
+    private FavoriteMovieDb db;
     private MovieDbClient client;
 
-    public MutableLiveData<List<Movie>> getMovieList(String apiKey, int mode) {
+    public MovieListViewModel(@NonNull Application application) {
+        super(application);
+        db = FavoriteMovieDb.getDatabase(application.getApplicationContext());
+    }
+
+    public LiveData<List<Movie>> getMovieList(String apiKey, int mode) {
+        if (mode == OverviewActivity.MODE_FAVORITE) {
+            return getFavoriteMovieList();
+        }
         if (client == null) {
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl(BASE_URL)
@@ -47,6 +62,22 @@ public class MovieListViewModel extends ViewModel {
 
     public void updateMovieList(String apiKey, int mode) {
         loadMovieList(apiKey, mode);
+    }
+
+    public void insertAllToFavorite(final Movie... favoriteMovies) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                db.favoriteMovieDao().insertAll(favoriteMovies);
+            }
+        }).start();
+    }
+
+    private LiveData<List<Movie>> getFavoriteMovieList() {
+        if (liveFavoriteMovieList == null) {
+            liveFavoriteMovieList = db.favoriteMovieDao().getAll();
+        }
+        return liveFavoriteMovieList;
     }
 
     private MutableLiveData<List<Movie>> getPopularMovieList(String apiKey, int mode) {
@@ -94,7 +125,7 @@ public class MovieListViewModel extends ViewModel {
                         } else {
                             livePopularMovieList.postValue(movieList);
                         }
-                    } else {
+                    } else if (mode == OverviewActivity.MODE_TOP_RATED){
                         if (liveTopRatedMovieList.getValue() != null) {
                             liveTopRatedMovieList.getValue().addAll(movieList);
                             liveTopRatedMovieList.postValue(liveTopRatedMovieList.getValue());

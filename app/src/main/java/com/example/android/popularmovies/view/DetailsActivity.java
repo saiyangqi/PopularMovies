@@ -54,6 +54,8 @@ public class DetailsActivity extends AppCompatActivity {
     private TrailersRvAdapter trailersRvAdapter;
     private ReviewsRvAdapter reviewsRvAdapter;
 
+    private Movie movie;
+
     private boolean isFavorite = false;
 
     @Override
@@ -66,16 +68,21 @@ public class DetailsActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra(OverviewActivity.MOVIE_KEY)) {
-            Movie movie = intent.getParcelableExtra(OverviewActivity.MOVIE_KEY);
-            displayMovieDetails(movie);
-            displayMovieVideos(movie);
-            displayMovieReviews(movie);
+            movie = intent.getParcelableExtra(OverviewActivity.MOVIE_KEY);
+            viewModel = ViewModelProviders.of(this).get(MovieDetailViewModel.class);
+            displayMovieDetails();
+            displayMovieVideos();
+            displayMovieReviews();
         }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.details_menu, menu);
+        if (viewModel.isInDb(movie.getId())) {
+            isFavorite = true;
+            menu.findItem(R.id.details_menu_favorite).setIcon(R.drawable.ic_favorite_white_full_24dp);
+        }
         return true;
     }
 
@@ -85,8 +92,10 @@ public class DetailsActivity extends AppCompatActivity {
             case R.id.details_menu_favorite:
                 if (isFavorite) {
                     item.setIcon(R.drawable.ic_favorite_white_24dp);
+                    viewModel.deleteFavorite(movie);
                 } else {
                     item.setIcon(R.drawable.ic_favorite_white_full_24dp);
+                    viewModel.insertFavorite(movie);
                 }
                 isFavorite = !isFavorite;
                 return true;
@@ -96,7 +105,7 @@ public class DetailsActivity extends AppCompatActivity {
         }
     }
 
-    private void displayMovieReviews(Movie movie) {
+    private void displayMovieReviews() {
         reviewsRecyclerView.setLayoutManager(new LinearLayoutManager(this,
                 LinearLayoutManager.VERTICAL, false));
         reviewsRvAdapter = new ReviewsRvAdapter(null);
@@ -110,13 +119,12 @@ public class DetailsActivity extends AppCompatActivity {
         });
     }
 
-    private void displayMovieVideos(Movie movie) {
+    private void displayMovieVideos() {
         trailersRecyclerView.setHasFixedSize(true);
         trailersRecyclerView.setLayoutManager(new LinearLayoutManager(this,
                 LinearLayoutManager.VERTICAL, false));
         trailersRvAdapter = new TrailersRvAdapter(null);
         trailersRecyclerView.setAdapter(trailersRvAdapter);
-        viewModel = ViewModelProviders.of(this).get(MovieDetailViewModel.class);
         viewModel.getMovieVideoList(apiKey, movie.getId()).observe(this, new Observer<List<MovieVideo>>() {
             @Override
             public void onChanged(@Nullable List<MovieVideo> movieVideos) {
@@ -126,7 +134,7 @@ public class DetailsActivity extends AppCompatActivity {
         });
     }
 
-    private void displayMovieDetails(Movie movie) {
+    private void displayMovieDetails() {
         boolean isPortrait = getResources().getBoolean(R.bool.is_portrait);
         setTitle(movie.getTitle());
         displayImage(movie, isPortrait);

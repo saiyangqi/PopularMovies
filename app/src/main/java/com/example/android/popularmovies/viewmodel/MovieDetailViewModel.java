@@ -1,15 +1,22 @@
 package com.example.android.popularmovies.viewmodel;
 
+import android.app.Application;
+import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
+import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 
+import com.example.android.popularmovies.model.Movie;
 import com.example.android.popularmovies.model.MovieReview;
 import com.example.android.popularmovies.model.api.MovieReviewsResponse;
 import com.example.android.popularmovies.model.MovieVideo;
 import com.example.android.popularmovies.model.api.MovieVideosResponse;
 import com.example.android.popularmovies.model.api.MovieDbClient;
+import com.example.android.popularmovies.model.database.FavoriteMovieDb;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -20,11 +27,19 @@ import retrofit2.converter.gson.GsonConverterFactory;
 /**
  * Created by Saiyang Qi on 6/8/18.
  */
-public class MovieDetailViewModel extends ViewModel{
+public class MovieDetailViewModel extends AndroidViewModel {
     private static final String BASE_URL = "http://api.themoviedb.org/3/";
+
     private MutableLiveData<List<MovieVideo>> liveMovieVideoList;
     private MutableLiveData<List<MovieReview>> liveMovieReviewList;
-    private MovieDbClient client;
+
+    private static FavoriteMovieDb db;
+    private static MovieDbClient client;
+
+    public MovieDetailViewModel(@NonNull Application application) {
+        super(application);
+        db = FavoriteMovieDb.getDatabase(application.getApplicationContext());
+    }
 
     public MutableLiveData<List<MovieVideo>> getMovieVideoList(String apiKey, int movieId) {
         initClient();
@@ -42,6 +57,43 @@ public class MovieDetailViewModel extends ViewModel{
             loadMovieReviewList(apiKey, movieId);
         }
         return liveMovieReviewList;
+    }
+
+    public void insertFavorite(final Movie movie) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                db.favoriteMovieDao().insertAll(movie);
+            }
+        }).start();
+    }
+
+    public void deleteFavorite(final Movie movie) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                db.favoriteMovieDao().delete(movie);
+            }
+        }).start();
+    }
+
+    public boolean isInDb (final int movieId) {
+        boolean found = false;
+        try {
+            found = new QueryByIdAsync().execute(movieId).get() != null;
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        return found;
+    }
+
+    private static class QueryByIdAsync extends AsyncTask<Integer, Void, Movie> {
+        @Override
+        protected Movie doInBackground(Integer... ids) {
+            return db.favoriteMovieDao().findById(ids[0]);
+        }
     }
 
     private void initClient() {

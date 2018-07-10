@@ -8,6 +8,9 @@
             android:checked="true" />
         <item android:id="@+id/overview_menu_top_rated"
             android:title="@string/menu_top_rated"
-            app:showAsAction="never"/>
+            app:showAsAction="never" />
+        <item android:id="@+id/overview_menu_favorite"
+            android:title="@string/menu_favorite"
+            app:showAsAction="never" />
     </group>
 </menu>

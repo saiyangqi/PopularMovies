@@ -30,8 +30,9 @@ public class OverviewActivity extends AppCompatActivity {
 
     public static final int MODE_POPULAR = 0;
     public static final int MODE_TOP_RATED = 1;
+    public static final int MODE_FAVORITE = 2;
 
-    private MovieListViewModel viewModel;
+    private MovieListViewModel movieListViewModel;
 
     @BindView(R.id.recycler_view_overview)
     RecyclerView recyclerView;
@@ -55,8 +56,9 @@ public class OverviewActivity extends AppCompatActivity {
         if (savedInstanceState != null) {
             mode = savedInstanceState.getInt(MODE_KEY, MODE_POPULAR);
         }
-        if (NetworkUtils.hasInternetConnection(this)) {
-            setUpRecyclerView();
+        setUpRecyclerView();
+        if (NetworkUtils.hasInternetConnection(this) || mode == MODE_FAVORITE) {
+            showMovieList();
         } else {
             errorTextView.setVisibility(View.VISIBLE);
         }
@@ -79,13 +81,24 @@ public class OverviewActivity extends AppCompatActivity {
             case MODE_TOP_RATED:
                 menu.findItem(R.id.overview_menu_top_rated).setChecked(true);
                 break;
+            case MODE_FAVORITE:
+                menu.findItem(R.id.overview_menu_favorite).setChecked(true);
+                break;
         }
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (NetworkUtils.hasInternetConnection(this)) {
+        if (item.getItemId() == R.id.overview_menu_favorite) {
+            if (mode != MODE_FAVORITE) {
+                mode = MODE_FAVORITE;
+                showMovieList();
+                layoutManager.scrollToPositionWithOffset(0, 0);
+            }
+            item.setChecked(true);
+            setTitle(getString(R.string.title_favorite));
+        } else if (NetworkUtils.hasInternetConnection(this)) {
             switch (item.getItemId()) {
                 case R.id.overview_menu_popular:
                     if (mode != MODE_POPULAR) {
@@ -118,28 +131,38 @@ public class OverviewActivity extends AppCompatActivity {
         adapter = new OverviewRvAdapter(null);
         recyclerView.setAdapter(adapter);
         setUpViewModel();
+
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                if (!recyclerView.canScrollVertically(1)) {
-                    viewModel.updateMovieList(apiKey, mode);
+                if (mode != MODE_FAVORITE && !recyclerView.canScrollVertically(1)) {
+                    movieListViewModel.updateMovieList(apiKey, mode);
                 }
             }
         });
     }
 
     private void setUpViewModel() {
-        viewModel = ViewModelProviders.of(this).get(MovieListViewModel.class);
-        showMovieList();
+        movieListViewModel = ViewModelProviders.of(this).get(MovieListViewModel.class);
     }
 
     private void showMovieList() {
-        viewModel.getMovieList(apiKey, mode).observe(this, new Observer<List<Movie>>() {
+        final int localMode = mode;
+        movieListViewModel.getMovieList(apiKey, localMode).observe(this, new Observer<List<Movie>>() {
             @Override
             public void onChanged(@Nullable List<Movie> movieList) {
-                adapter.setMovieList(movieList);
-                adapter.notifyDataSetChanged();
+                if (movieList != null && movieList.size() != 0) {
+                    errorTextView.setVisibility(View.INVISIBLE);
+                }
+                if ((movieList == null || movieList.size() == 0) && localMode == MODE_FAVORITE) {
+                    errorTextView.setText(getString(R.string.overview_favorite_empty));
+                    errorTextView.setVisibility(View.VISIBLE);
+                }
+                if (localMode == mode) {
+                    adapter.setMovieList(movieList);
+                    adapter.notifyDataSetChanged();
+                }
             }
         });
     }
